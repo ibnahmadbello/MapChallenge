@@ -24,9 +24,10 @@ import retrofit2.Response;
 public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
-    public MapService mapService;
-    public RecyclerView recyclerView;
-    public DetailAdapter detailAdapter;
+    private MapService mapService;
+    private RecyclerView recyclerView;
+    private DetailAdapter detailAdapter;
+    private ProgressBar detailProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class DetailActivity extends AppCompatActivity {
         detailAdapter = new DetailAdapter();
         recyclerView.setAdapter(detailAdapter);
 
+        detailProgressBar = findViewById(R.id.detail_progress_bar);
 
         mapService = MapApi.getRetrofit(this).create(MapService.class);
 
@@ -47,19 +49,19 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void makeCityRequest(final int cityId) {
-        Toast.makeText(DetailActivity.this, String.valueOf(cityId), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DetailActivity.this, String.valueOf(cityId), Toast.LENGTH_SHORT).show();
         mapService.getCityDetail(cityId).enqueue(new Callback<DetailResponse>() {
             @Override
             public void onResponse(Call<DetailResponse> call, Response<DetailResponse> response) {
-
-                List<ConsolidatedWeather> weatherList = response.body().getConsolidatedWeather();
-                detailAdapter.setData(weatherList);
-                Log.d(TAG, weatherList.toString());
+                detailProgressBar.setVisibility(View.GONE);
+                List<ConsolidatedWeather> weathers = fetchResults(response);
+                detailAdapter.setData(weathers);
             }
 
             @Override
             public void onFailure(Call<DetailResponse> call, Throwable t) {
-
+                t.printStackTrace();
+                Log.d(TAG, "Error loading response");
             }
         });
     }

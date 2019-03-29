@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class ConsolidatedWeather {
 
-    @SerializedName("id")
-    @Expose
-    private Integer id;
     @SerializedName("weather_state_name")
     @Expose
     private String weatherStateName;
@@ -51,14 +48,6 @@ public class ConsolidatedWeather {
     @SerializedName("predictability")
     @Expose
     private Integer predictability;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getWeatherStateName() {
         return weatherStateName;

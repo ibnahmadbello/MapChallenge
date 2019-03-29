@@ -27,9 +27,10 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ClickListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public RecyclerView recyclerView;
-    public RecyclerViewAdapter recyclerViewAdapter;
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter recyclerViewAdapter;
     private MapService mapService;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewAdapter = new RecyclerViewAdapter(this);
         recyclerView.setAdapter(recyclerViewAdapter);
+
+        progressBar = findViewById(R.id.progress_bar);
 
         mapService = MapApi.getRetrofit(this).create(MapService.class);
     }
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 mapService.getCityList(s).enqueue(new Callback<List<Location>>() {
                     @Override
                     public void onResponse(Call<List<Location>> call, Response<List<Location>> response) {
+                        progressBar.setVisibility(View.GONE);
                         List<Location> locations = response.body();
                         recyclerViewAdapter.setData(locations);
                     }
@@ -76,6 +80,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 return false;
             }
         });
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
 
 
         return true;
@@ -83,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
 
     @Override
-    public void launchIntent(int id) {
-        startActivity(new Intent(this, DetailActivity.class).putExtra("woeid", id));
+    public void launchIntent(int woeid) {
+        startActivity(new Intent(this, DetailActivity.class).putExtra("woeid", woeid));
     }
 }
