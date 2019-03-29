@@ -46,10 +46,12 @@ public class DetailActivity extends AppCompatActivity {
         makeCityRequest(woeid);
     }
 
-    private void makeCityRequest(int cityId) {
+    private void makeCityRequest(final int cityId) {
+        Toast.makeText(DetailActivity.this, String.valueOf(cityId), Toast.LENGTH_SHORT).show();
         mapService.getCityDetail(cityId).enqueue(new Callback<DetailResponse>() {
             @Override
             public void onResponse(Call<DetailResponse> call, Response<DetailResponse> response) {
+
                 List<ConsolidatedWeather> weatherList = response.body().getConsolidatedWeather();
                 detailAdapter.setData(weatherList);
                 Log.d(TAG, weatherList.toString());
