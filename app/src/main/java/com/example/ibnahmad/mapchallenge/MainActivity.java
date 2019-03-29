@@ -2,30 +2,70 @@ package com.example.ibnahmad.mapchallenge;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.example.ibnahmad.mapchallenge.adapter.RecyclerViewAdapter;
+import com.example.ibnahmad.mapchallenge.pojo.Location;
+import com.example.ibnahmad.mapchallenge.retrofit.MapApi;
+import com.example.ibnahmad.mapchallenge.retrofit.MapService;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+    public RecyclerView recyclerView;
+    public RecyclerViewAdapter recyclerViewAdapter;
+    private MapService mapService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewAdapter = new RecyclerViewAdapter();
+        recyclerView.setAdapter(recyclerViewAdapter);
+
+        mapService = MapApi.getRetrofit(this).create(MapService.class);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
+        final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
 
         searchView.setQueryHint("Enter your location search here.");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                return false;
+                mapService.getCityList(s).enqueue(new Callback<List<Location>>() {
+                    @Override
+                    public void onResponse(Call<List<Location>> call, Response<List<Location>> response) {
+                        List<Location> locations = response.body();
+                        recyclerViewAdapter.setData(locations);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Location>> call, Throwable t) {
+
+                    }
+                });
+                Log.d(TAG, "First check = " + s);
+                return true;
             }
 
             @Override
@@ -34,14 +74,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-
-
-        return super.onOptionsItemSelected(item);
-    }
 }
