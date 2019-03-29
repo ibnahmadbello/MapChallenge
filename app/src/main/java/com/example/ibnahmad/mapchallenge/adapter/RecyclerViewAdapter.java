@@ -18,8 +18,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public static final String TAG = RecyclerViewAdapter.class.getSimpleName();
     private List<Location> locationList;
+    private RecyclerViewAdapter.ClickListener clickListener;
 
-    public RecyclerViewAdapter(){
+    public RecyclerViewAdapter(ClickListener clickListener){
+        this.clickListener = clickListener;
         locationList = new ArrayList<>();
     }
 
@@ -51,6 +53,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyDataSetChanged();
     }
 
+    public interface ClickListener{
+        void launchIntent(int id);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView txtCity, txtTypeDetail, txtIdDetail, txtLongLatDetail;
         public CardView cardView;
@@ -63,6 +69,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             txtIdDetail = view.findViewById(R.id.txtIdDetail);
             txtLongLatDetail = view.findViewById(R.id.txtLongLatDetail);
             cardView = view.findViewById(R.id.cardView);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickListener.launchIntent(locationList.get(getAdapterPosition()).getWoeid());
+                }
+            });
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ibnahmad.mapchallenge.retrofit;
 
 import com.example.ibnahmad.mapchallenge.pojo.ConsolidatedWeather;
+import com.example.ibnahmad.mapchallenge.pojo.DetailResponse;
 import com.example.ibnahmad.mapchallenge.pojo.Location;
 
 import java.util.List;
@@ -16,6 +17,6 @@ public interface MapService {
     Call<List<Location>> getCityList(@Query("query") String query);
 
     @GET("api/location/{woeid}")
-    Call<ConsolidatedWeather> getCityDetail(@Path("woeid") int woeid);
+    Call<DetailResponse> getCityDetail(@Path("woeid") int woeid);
 
 }

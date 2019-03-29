@@ -1,5 +1,6 @@
 package com.example.ibnahmad.mapchallenge;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.ibnahmad.mapchallenge.adapter.RecyclerViewAdapter;
 import com.example.ibnahmad.mapchallenge.pojo.Location;
@@ -21,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ClickListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
     public RecyclerView recyclerView;
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewAdapter = new RecyclerViewAdapter();
+        recyclerViewAdapter = new RecyclerViewAdapter(this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         mapService = MapApi.getRetrofit(this).create(MapService.class);
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<List<Location>> call, Throwable t) {
-
+                        Toast.makeText(MainActivity.this, "Error loading your search. Try again!", Toast.LENGTH_SHORT).show();
                     }
                 });
                 Log.d(TAG, "First check = " + s);
@@ -79,4 +82,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void launchIntent(int id) {
+        startActivity(new Intent(this, DetailActivity.class).putExtra("woeid", id));
+    }
 }

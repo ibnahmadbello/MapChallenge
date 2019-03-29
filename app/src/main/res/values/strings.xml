@@ -5,4 +5,11 @@
     <string name="location_type">Location Type:</string>
     <string name="location_id">woeid:</string>
     <string name="long_lat">Longitude/Latitude:</string>
+    <string name="date">Date</string>
+    <string name="weather_state">Weather State</string>
+    <string name="wind_direction">Wind Direction</string>
+    <string name="humidity">Humidity</string>
+    <string name="predictability">Predictability:</string>
+    <string name="min_temp">Min_Temp:</string>
+    <string name="max_temp">Max_Temp:</string>
 </resources>

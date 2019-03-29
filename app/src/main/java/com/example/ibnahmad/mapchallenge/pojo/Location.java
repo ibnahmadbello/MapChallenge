@@ -3,9 +3,9 @@ package com.example.ibnahmad.mapchallenge.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.io.Serializable;
 
-public class Location {
+public class Location implements Serializable {
 
         @SerializedName("title")
         @Expose
